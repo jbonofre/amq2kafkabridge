@@ -16,7 +16,7 @@ public class BrokerFacade {
     public BrokerFacade(int port, String jettyConfig, String syncopeAccess) throws Exception {
         brokerService = new BrokerService();
         brokerService.setBrokerName("facade");
-        brokerService.setUseJmx(false);
+        brokerService.setUseJmx(true);
         brokerService.setPersistenceAdapter(new MemoryPersistenceAdapter());
         if (jettyConfig != null) {
             brokerService.addConnector("http://0.0.0.0:" + port + "?jetty.config=" + jettyConfig);
