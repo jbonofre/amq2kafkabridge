@@ -16,6 +16,12 @@ public class Main {
     public static void main(String[] args) throws Exception {
         LOGGER.info("Max memory: {}", Runtime.getRuntime().maxMemory());
 
+        String logLevel = "info";
+        if (System.getenv("LOGGING_LEVEL") != null) {
+            logLevel = System.getenv("LOGGING_LEVEL");
+        }
+        System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", logLevel);
+
         int port = 8080;
         if (System.getenv("HTTP_PORT") != null) {
             port = Integer.parseInt(System.getenv("HTTP_PORT"));

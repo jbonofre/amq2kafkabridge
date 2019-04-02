@@ -31,6 +31,7 @@ public class KafkaForwarder implements MessageListener {
     @Override
     public void onMessage(Message message) {
         try {
+            LOGGER.debug("Forwarding message to kafka");
             producer.send(new ProducerRecord<>(topic, ((TextMessage) message).getText())).get();
             producer.flush();
             message.acknowledge();

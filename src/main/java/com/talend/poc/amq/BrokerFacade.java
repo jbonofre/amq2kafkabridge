@@ -1,19 +1,23 @@
 package com.talend.poc.amq;
 
-import org.apache.activemq.broker.Broker;
 import org.apache.activemq.broker.BrokerPlugin;
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.store.memory.MemoryPersistenceAdapter;
 import org.apache.activemq.usage.MemoryUsage;
 import org.apache.activemq.usage.StoreUsage;
 import org.apache.activemq.usage.SystemUsage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.talend.ipaas.rt.amq.security.TipaasSecurityPlugin;
 
 public class BrokerFacade {
 
+    private final static Logger LOGGER = LoggerFactory.getLogger(BrokerFacade.class);
+
     private BrokerService brokerService;
 
     public BrokerFacade(int port, String jettyConfig, String syncopeAccess) throws Exception {
+        LOGGER.info("Creating embedded ActiveMQ broker");
         brokerService = new BrokerService();
         brokerService.setBrokerName("facade");
         brokerService.setUseJmx(true);
@@ -43,10 +47,12 @@ public class BrokerFacade {
     }
 
     public void start() throws Exception {
+        LOGGER.info("Starting ActiveMQ embedded broker");
         brokerService.start();
     }
 
     public void stop() throws Exception {
+        LOGGER.info("Stopping ActiveMQ embedded broker");
         brokerService.stop();
     }
 }
