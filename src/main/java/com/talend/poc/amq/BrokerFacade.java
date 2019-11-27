@@ -16,16 +16,16 @@ public class BrokerFacade {
 
     private BrokerService brokerService;
 
-    public BrokerFacade(int port, String jettyConfig, String syncopeAccess) throws Exception {
+    public BrokerFacade(int port, String jettyConfig, long maxFrameSize, String syncopeAccess) throws Exception {
         LOGGER.info("Creating embedded ActiveMQ broker");
         brokerService = new BrokerService();
         brokerService.setBrokerName("facade");
         brokerService.setUseJmx(true);
         brokerService.setPersistenceAdapter(new MemoryPersistenceAdapter());
         if (jettyConfig != null) {
-            brokerService.addConnector("http://0.0.0.0:" + port + "?jetty.config=" + jettyConfig);
+            brokerService.addConnector("http://0.0.0.0:" + port + "?jetty.config=" + jettyConfig + "&wireFormat.maxFrameSize=" + maxFrameSize);
         } else {
-            brokerService.addConnector("http://0.0.0.0:" + port);
+            brokerService.addConnector("http://0.0.0.0:" + port + "?wireFormat.maxFrameSize=" + maxFrameSize);
         }
         brokerService.addConnector("vm://facade");
         brokerService.setPopulateJMSXUserID(true);
