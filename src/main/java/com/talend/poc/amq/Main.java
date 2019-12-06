@@ -58,14 +58,17 @@ public class Main {
         if (activemqPassword == null) {
             throw new RuntimeException("ACTIVEMQ_PASSWORD is not set");
         }
-        int maxFrameSize = 10000000;
-        if (System.getenv("ACTIVEMQ_MAX_FRAME_SIZE") != null) {
-            maxFrameSize = Integer.parseInt(System.getenv("ACTIVEMQ_MAX_FRAME_SIZE"));
+        int httpMaxFrameSize = 10000000;
+        if (System.getenv("ACTIVEMQ_HTTP_MAX_FRAME_SIZE") != null) {
+            httpMaxFrameSize = Integer.parseInt(System.getenv("ACTIVEMQ_HTTP_MAX_FRAME_SIZE"));
+        }
+        int tcpMaxFrameSize = 10000000;
+        if (System.getenv("ACTIVEMQ_TCP_MAX_FRAME_SIZE") != null) {
+            tcpMaxFrameSize = Integer.parseInt(System.getenv("ACTIVEMQ_HTTP_MAX_FRAME_SIZE"));
         }
 
-
         LOGGER.info("Starting bridge on http://0.0.0.0:{} / tcp://0.0.0.0:{}", httpPort, tcpPort);
-        BrokerFacade facade = new BrokerFacade(httpPort, jettyConfig, tcpPort, maxFrameSize, syncopeAccess);
+        BrokerFacade facade = new BrokerFacade(httpPort, jettyConfig, tcpPort, httpMaxFrameSize, tcpMaxFrameSize, syncopeAccess);
         facade.start();
 
         LOGGER.info("Starting kafka forwarder ([http://0.0.0.0:{}|tcp://0.0.0.0:{}]/{} -> {}/{})", httpPort, tcpPort, queueName, entrypoint, topic);
