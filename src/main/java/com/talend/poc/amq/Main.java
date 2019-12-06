@@ -22,9 +22,13 @@ public class Main {
         }
         System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", logLevel);
 
-        int port = 8080;
+        int httpPort = 8080;
         if (System.getenv("HTTP_PORT") != null) {
-            port = Integer.parseInt(System.getenv("HTTP_PORT"));
+            httpPort = Integer.parseInt(System.getenv("HTTP_PORT"));
+        }
+        int tcpPort = 61616;
+        if (System.getenv("TCP_PORT") != null) {
+            tcpPort = Integer.parseInt(System.getenv("TCP_PORT"));
         }
         String queueName = "INCOMING";
         if (System.getenv("JMS_QUEUE") != null) {
@@ -60,11 +64,11 @@ public class Main {
         }
 
 
-        LOGGER.info("Starting bridge on http://0.0.0.0:{}", port);
-        BrokerFacade facade = new BrokerFacade(port, jettyConfig, maxFrameSize, syncopeAccess);
+        LOGGER.info("Starting bridge on http://0.0.0.0:{} / tcp://0.0.0.0:{}", httpPort, tcpPort);
+        BrokerFacade facade = new BrokerFacade(httpPort, jettyConfig, tcpPort, maxFrameSize, syncopeAccess);
         facade.start();
 
-        LOGGER.info("Starting kafka forwarder (http://0.0.0.0:{}/{} -> {}/{})", port, queueName, entrypoint, topic);
+        LOGGER.info("Starting kafka forwarder ([http://0.0.0.0:{}|tcp://0.0.0.0:{}]/{} -> {}/{})", httpPort, tcpPort, queueName, entrypoint, topic);
         ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://facade");
         Connection connection = connectionFactory.createConnection(activemqUsername, activemqPassword);
         Session session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
